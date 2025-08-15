@@ -22,20 +22,24 @@ npm run start:dev
 ```
 
 2. Test the API
+
 The API can be tested using Swagger, it can be found in http://localhost:<PORT>/docs
 
 
-Running Tests
+3. Running Tests
+
 npm test          # All tests
 npm run test:unit # Unit tests
 npm run test:e2e  # Integration tests
 
 ## Architecture Overview
+```
 src/
  ├─ domain/         # Entities and domain interfaces (ports)
  ├─ application/    # Use cases and orchestrator services
  ├─ infrastructure/ # HTTP controllers, MongoDB repositories, schemas, runtime config
  └─ common/         # Shared DTOs, utilities, and error filters
+```
 
 ## Hexagonal Architecture Diagram
 ```mermaid
