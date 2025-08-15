@@ -1,8 +1,10 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { Document, Model, ObjectId, Types } from 'mongoose';
+
 import TaskRepository from '@domain/task/task.repository';
 import { Task } from '@domain/task/task.entity';
 import { TaskModel } from '../mongoose/task.schema';
+import { Image } from '@domain/image/image.entity';
 
 export type TaskDocument = Task & Document<ObjectId>;
 
@@ -11,10 +13,11 @@ export class TasksMongoRepository implements TaskRepository {
 
   async create(task: Task): Promise<Task> {
     const created = (await this.model.create({
+      taskId: task.taskId,
       status: task.status,
       price: task.price,
       originalPath: task.originalPath,
-      images: task.images,
+      images: [],
     })) as unknown as TaskDocument;
     return this.map(created);
   }
@@ -45,11 +48,13 @@ export class TasksMongoRepository implements TaskRepository {
       doc.status,
       doc.price,
       doc.originalPath,
-      // (doc.images || []).map((i: any) => ({
-      //   resolution: i.resolution,
-      //   path: i.path,
-      //   md5: i.md5,
-      // })),
+      (doc.images || []).map((i: Image) => ({
+        resolution: i.resolution,
+        path: i.path,
+        md5: i.md5,
+        createdAt: i.createdAt,
+        updatedAt: i.updatedAt,
+      })),
     );
   }
 }

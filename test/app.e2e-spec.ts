@@ -24,4 +24,18 @@ describe('AppController (e2e)', () => {
       .expect(200)
       .expect('Hello World!');
   });
+
+  it('/tasks (POST)', () => {
+    return request(app.getHttpServer())
+      .post('/tasks')
+      .send({ source: 'https://picsum.photos/id/237/200/300' })
+      .expect((res) => {
+        expect(res.status).toEqual(201);
+        expect(res.body).toMatchObject({
+          taskId: expect.any(String),
+          status: 'pending',
+          price: expect.any(Number),
+        });
+      });
+  });
 });

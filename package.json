@@ -27,9 +27,13 @@
     "@nestjs/mongoose": "^11.0.3",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/swagger": "^11.2.0",
+    "axios": "^1.11.0",
+    "class-validator": "^0.14.2",
     "mongoose": "^8.17.1",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "sharp": "^0.34.3",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
@@ -77,6 +81,11 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^@application(|/.*)$": "<rootDir>/src/application/$1",
+      "^@domain(|/.*)$": "<rootDir>/src/domain/$1",
+      "^@infra(|/.*)$": "<rootDir>/src/infrastructure/$1"
+    }
   }
 }
