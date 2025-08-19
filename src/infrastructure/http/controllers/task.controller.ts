@@ -1,25 +1,33 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { ApiTags, ApiOkResponse, ApiCreatedResponse } from '@nestjs/swagger';
-
-import { Types } from 'mongoose';
+import { ApiTags, ApiOperation, ApiResponse, OmitType } from '@nestjs/swagger';
 
 import { CreateTaskDto } from '../dto/create-task.dto';
 import { CreateTaskUseCase } from '@application/task-create/task.create';
 import { GetTaskUseCase } from '@application/task-get/task.get';
-import { ProcessImageService } from '@application/image-process/image.process';
+import { ProcessImageService } from '@domain/image/image-process/image.process';
 import { Task } from '@domain/task/task.entity';
+import { ResponseTaskDto } from '../dto/response-task.dto';
 
 @ApiTags('tasks')
 @Controller('tasks')
 export class TaskController {
-  constructor(
+  constructor (
     private readonly createTask: CreateTaskUseCase,
     private readonly getTask: GetTaskUseCase,
     private readonly processor: ProcessImageService,
-  ) {}
+  ) { }
 
   @Post()
-  @ApiCreatedResponse({ description: 'Create a processing tasks' })
+  @ApiOperation({ summary: 'Create a processing tasks' })
+  @ApiResponse({
+    status: 201,
+    description: 'New task created',
+    type: class CreateTaskResponse extends OmitType(ResponseTaskDto, ['images']) {},
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid input',
+  })
   async create(@Body() dto: CreateTaskDto) {
     const task: Task = await this.createTask.execute(dto.source);
     // On a prod environment this should be push to a queue of tasks
@@ -34,7 +42,16 @@ export class TaskController {
   }
 
   @Get(':id')
-  @ApiOkResponse({ description: 'Get Task Info' })
+  @ApiOperation({ summary: 'Get task Info' })
+  @ApiResponse({
+    status: 201,
+    description: 'Get task Info',
+    type: class GetTaskResponse extends ResponseTaskDto {},
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Task not found',
+  })
   async get(@Param('id') id: string) {
     const task = await this.getTask.execute(id);
     return {
@@ -44,8 +61,8 @@ export class TaskController {
       images:
         task.status === 'completed'
           ? task.images
-              .sort((a, b) => b.resolution - a.resolution)
-              .map((i) => ({ resolution: String(i.resolution), path: i.path }))
+            .sort((a, b) => b.resolution - a.resolution)
+            .map((i) => ({ resolution: String(i.resolution), path: i.path }))
           : undefined,
     };
   }
