@@ -1,6 +1,7 @@
 # Custom
 /output
 /input
+tmp_output
 
 # Logs
 logs

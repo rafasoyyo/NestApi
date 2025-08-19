@@ -3,7 +3,7 @@ import { TaskController } from './task.controller';
 
 import { CreateTaskUseCase } from '@application/task-create/task.create';
 import { GetTaskUseCase } from '@application/task-get/task.get';
-import { ProcessImageService } from '@application/image-process/image.process';
+import { ProcessImageService } from '@domain/image/image-process/image.process';
 
 import { RepositoriesModule } from '@infra/db/repositories/repositories.module';
 
